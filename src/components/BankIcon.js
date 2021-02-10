@@ -1,33 +1,70 @@
-import React from 'react';
-import FallbackIcon from './FallbackIcon';
-import { propTypes, defaultProps } from './types/BankIcon.types';
-import { getIconByName, getIconById } from '../util/icon-set';
+import React from "react";
+import { getIconById, getIconByName } from "../util/icon-set";
+import FallbackIcon from "./FallbackIcon";
+import { defaultProps, propTypes } from "./types/BankIcon.types";
 
 const getIcon = (bankName, bankId) => {
   if (bankName && bankId) {
-    console.warn('Both BankID and BankName were provided. BankName will be used.');
     return getIconByName(bankName);
   }
   return bankId ? getIconById(bankId) : getIconByName(bankName);
 };
 
-const BankIcon = ({ bankName, bankId, size, color, borderRadius }) => {
+const BankIcon = ({
+  bankName,
+  bankId,
+  size,
+  viewBox = "0 0 32 32",
+  color,
+  borderRadius,
+  fallbackIcon,
+}) => {
   const bankIconData = getIcon(bankName, bankId);
 
-  const svgBorderRadius = (size * borderRadius / 24)
+  const svgBorderRadius = (size * borderRadius) / 24;
 
   if (!bankIconData) {
-    return <FallbackIcon size={size} borderRadius={ borderRadius } color={color} />;
+    if (fallbackIcon) {
+      return (
+        <fallbackIcon size={size} borderRadius={borderRadius} color={color} />
+      );
+    }
+    return (
+      <FallbackIcon size={size} borderRadius={borderRadius} color={color} />
+    );
   }
 
-  const svgPath = color ? bankIconData.svg.mono : bankIconData.svg.original;
+  const Svg = bankIconData.svg.original;
   const ariaLabel = `Ícone representando a marca do ${bankIconData.ariaTitle}.`;
 
+  if (typeof Svg === "function") {
+    return (
+      <svg
+        width={size}
+        style={{ borderRadius: svgBorderRadius }}
+        className={`rbbi-${bankIconData.bankName}`}
+        height={size}
+        fill={color}
+      >
+        <title>{bankIconData.ariaTitle}</title>
+        <desc>{ariaLabel}</desc>
+        <Svg viewBox size={size} svgBorderRadius={svgBorderRadius} />
+      </svg>
+    );
+  }
+
   return (
-    <svg width={size} style={{ borderRadius: svgBorderRadius }} className={`rbbi-${bankIconData.bankName}`} height={size} viewBox="0 0 24 24" fill={color}>
+    <svg
+      width={size}
+      style={{ borderRadius: svgBorderRadius }}
+      className={`rbbi-${bankIconData.bankName}`}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={color}
+    >
       <title>{bankIconData.ariaTitle}</title>
       <desc>{ariaLabel}</desc>
-      {svgPath}
+      {Svg}
     </svg>
   );
 };
