@@ -20,8 +20,10 @@ import Safra from "./safra";
 import Santander from "./santander";
 import XP from "./xp";
 import Acesso from "./acesso";
+import Abcbank from "./abcbank";
 
 export default [
+  Abcbank,
   Agibank,
   Banrisul,
   BB,

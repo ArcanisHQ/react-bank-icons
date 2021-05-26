@@ -19,6 +19,7 @@ const BankIcon = ({
   borderRadius,
   fallbackIcon,
 }) => {
+  console.log({bankId, bankName});
   const bankIconData = getIcon(bankName, bankId);
 
   const svgBorderRadius = (size * borderRadius) / 24;
@@ -36,7 +37,7 @@ const BankIcon = ({
 
   const Svg = bankIconData.svg.original;
   const ariaLabel = `Ícone representando a marca do ${bankIconData.ariaTitle}.`;
-
+  console.log(Svg);
   if (typeof Svg === "function") {
     return (
       <svg
@@ -48,7 +49,7 @@ const BankIcon = ({
       >
         <title>{bankIconData.ariaTitle}</title>
         <desc>{ariaLabel}</desc>
-        <Svg viewBox size={size} svgBorderRadius={svgBorderRadius} />
+        <Svg size={size} svgBorderRadius={svgBorderRadius} />
       </svg>
     );
   }
